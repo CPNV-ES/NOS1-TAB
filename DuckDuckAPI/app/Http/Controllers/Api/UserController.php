@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    protected $neo4j;
+
+    public function __construct(Neo4jService $neo4j)
+    {
+        $this->neo4j = $neo4j;
+    }
+
     public function index(Neo4jService $neo4j)
     {
         $result = $neo4j->client->run(
