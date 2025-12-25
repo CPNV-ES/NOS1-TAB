@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use Laudis\Neo4j\ClientBuilder;
+use Laudis\Neo4j\Authentication\Authenticate;
+use Laudis\Neo4j\Contracts\ClientInterface;
 
 class Neo4jService
 {
-    public $client;
+    public ClientInterface $client;
 
     public function __construct()
     {
@@ -14,7 +16,7 @@ class Neo4jService
             ->withDriver(
                 'default',
                 config('neo4j.uri'),
-                \Laudis\Neo4j\Authentication\Authenticate::basic(
+                Authenticate::basic(
                     config('neo4j.user'),
                     config('neo4j.password')
                 )

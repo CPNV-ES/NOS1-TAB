@@ -15,11 +15,10 @@ class Neo4jServiceProvider extends ServiceProvider
     {
         $this->app->singleton('neo4j', function () {
 
-            $scheme = env('NEO4J_SCHEME', 'bolt');
             $host   = env('NEO4J_HOST', '127.0.0.1');
             $port   = env('NEO4J_PORT', 7687);
 
-            $uri = "{$scheme}://{$host}:{$port}";
+            $uri = "bolt://{$host}:{$port}";
 
             return ClientBuilder::create()
                 ->withDriver(

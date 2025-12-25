@@ -8,16 +8,9 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    protected $neo4j;
-
-    public function __construct(Neo4jService $neo4j)
+    public function index(Neo4jService $neo4j)
     {
-        $this->neo4j = $neo4j->client;
-    }
-
-    public function index()
-    {
-        $result = $this->neo4j->run(
+        $result = $neo4j->client->run(
             'MATCH (u:User) RETURN u'
         );
 
@@ -30,9 +23,9 @@ class UserController extends Controller
         return response()->json($users);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, Neo4jService $neo4j)
     {
-        $this->neo4j->run(
+        $neo4j->client->run(
             'CREATE (u:User {name: $name, email: $email})',
             [
                 'name' => $request->name,
@@ -40,6 +33,6 @@ class UserController extends Controller
             ]
         );
 
-        return response()->json(['message' => 'Utilisateur créé'], 201);
+        return response()->json(['message' => 'User created'], 201);
     }
 }
