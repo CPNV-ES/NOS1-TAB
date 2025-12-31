@@ -14,23 +14,19 @@ class Neo4jServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton('neo4j', function () {
+            $scheme = env('NEO4J_SCHEME', 'bolt');
+            $host = env('NEO4J_HOST');
+            $port = env('NEO4J_PORT');
+            $user = env('NEO4J_USERNAME');
+            $pass = env('NEO4J_PASSWORD');
 
-            $host   = env('NEO4J_HOST', '127.0.0.1');
-            $port   = env('NEO4J_PORT', 7687);
-
-            $uri = "bolt://{$host}:{$port}";
+            $uri = "{$scheme}://{$user}:{$pass}@{$host}:{$port}";
 
             return ClientBuilder::create()
-                ->withDriver(
-                    'default',
-                    $uri,
-                    Authenticate::basic(
-                        env('NEO4J_USER'),
-                        env('NEO4J_PASSWORD')
-                    )
-                )
+                ->withDriver('bolt', $uri)
                 ->build();
         });
+
     }
 
     /**
