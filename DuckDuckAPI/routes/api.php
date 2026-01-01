@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\ProfilController;
 use App\Services\Neo4jService;
 
 Route::get('/test-neo4j', function (Neo4jService $neo4j) {
@@ -19,3 +20,5 @@ Route::get('/test-neo4j', function (Neo4jService $neo4j) {
 
 Route::get('/users', [UserController::class, 'index']);
 Route::post('/users', [UserController::class, 'store']);
+
+Route::apiResource('profils', ProfilController::class);

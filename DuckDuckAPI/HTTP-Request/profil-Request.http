@@ -1,0 +1,33 @@
+### index
+GET http://127.0.0.1:8000/api/profils
+Accept: application/json
+### store
+POST http://127.0.0.1:8000/api/profils
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Bob",
+  "image_id": 111111,
+  "password": "secret"
+}
+### show
+GET http://127.0.0.1:8000/api/profils/8c91aca2-a999-4510-96ff-1167af7cc58c
+Accept: application/json
+### update
+PUT http://127.0.0.1:8000/api/profils/8c91aca2-a999-4510-96ff-1167af7cc58c
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Bob Updated",
+  "image_id": 222222
+}
+### destroy
+DELETE http://127.0.0.1:8000/api/profils/8c91aca2-a999-4510-96ff-1167af7cc58c
+Accept: application/json
+
+
+
+
+
