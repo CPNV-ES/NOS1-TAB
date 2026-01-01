@@ -7,24 +7,24 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Bob",
-  "image_id": 111111,
+  "name": "Max",
+  "image_id": 99999,
   "password": "secret"
 }
 ### show
-GET http://127.0.0.1:8000/api/profils/8c91aca2-a999-4510-96ff-1167af7cc58c
+GET http://127.0.0.1:8000/api/profils/11111111-1111-1111-1111-111111111111
 Accept: application/json
 ### update
-PUT http://127.0.0.1:8000/api/profils/8c91aca2-a999-4510-96ff-1167af7cc58c
+PUT http://127.0.0.1:8000/api/profils/11111111-1111-1111-1111-111111111111
 Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Bob Updated",
-  "image_id": 222222
+  "name": "Alice Updated",
+  "image_id": 989898,
 }
 ### destroy
-DELETE http://127.0.0.1:8000/api/profils/8c91aca2-a999-4510-96ff-1167af7cc58c
+DELETE http://127.0.0.1:8000/api/profils/11111111-1111-1111-1111-111111111111
 Accept: application/json
 
 
