@@ -19,16 +19,18 @@ class Neo4jServiceProvider extends ServiceProvider
             $port = env('NEO4J_PORT');
             $user = env('NEO4J_USERNAME');
             $pass = env('NEO4J_PASSWORD');
+            $database = env('NEO4J_DATABASE', 'neo4j');
 
-            $uri = "{$scheme}://{$user}:{$pass}@{$host}:{$port}";
+            // DSN complet avec base
+            $dsn = "{$scheme}://{$user}:{$pass}@{$host}:{$port}?database={$database}";
 
             return ClientBuilder::create()
-                ->withDriver('bolt', $uri)
+                ->withDriver('bolt', $dsn)
+                ->withDefaultDriver('bolt')
                 ->build();
         });
-
     }
-
+    
     /**
      * Bootstrap services.
      */
