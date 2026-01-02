@@ -1,5 +1,5 @@
 // Duck-insert
-// Profils
+// Profils ///////////////////////////////////////////////////
 
 // Alice
 CREATE (:Profil {
@@ -51,7 +51,7 @@ CREATE (:Profil {
   updated_at: "2024-10-05T00:00:00.000Z"
 });
 
-// Relations FRIEND
+// Relations FRIEND ///////////////////////////////////////////////////
 
 // Alice → Bob
 MATCH (a:Profil {id: "11111111-1111-1111-1111-111111111111"}),
@@ -82,3 +82,63 @@ CREATE (d)-[:FRIEND {created_at: "2024-10-14T00:00:00.000Z"}]->(b);
 MATCH (c:Profil {id: "33333333-3333-3333-3333-333333333333"}),
       (a:Profil {id: "11111111-1111-1111-1111-111111111111"})
 CREATE (c)-[:FRIEND {created_at: "2024-10-15T00:00:00.000Z"}]->(a);
+
+// Posts ////////////////////////////////////////////////////////////
+
+// Hello world!
+CREATE (:Post {
+  id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  description: "Hello world!",
+  image_id: 987001,
+  created_at: "2024-11-01T00:00:00.000Z",
+  updated_at: "2024-11-01T00:00:00.000Z"
+});
+
+// Learning Cypher
+CREATE (:Post {
+  id: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  description: "Learning Cypher",
+  image_id: 987002,
+  created_at: "2024-12-01T00:00:00.000Z",
+  updated_at: "2024-12-01T00:00:00.000Z"
+});
+
+// Enjoying the weather
+CREATE (:Post {
+  id: "cccccccc-cccc-cccc-cccc-cccccccccccc",
+  description: "Enjoying the weather",
+  image_id: 987003,
+  created_at: "2024-11-15T00:00:00.000Z",
+  updated_at: "2024-11-15T00:00:00.000Z"
+});
+
+// Traveling to Paris
+CREATE (:Post {
+  id: "dddddddd-dddd-dddd-dddd-dddddddddddd",
+  description: "Traveling to Paris",
+  image_id: 987004,
+  created_at: "2024-11-20T00:00:00.000Z",
+  updated_at: "2024-11-20T00:00:00.000Z"
+});
+
+// Relations POSTED ///////////////////////////////////////////////////
+
+// Alice → Hello world!
+MATCH (a:Profil {id: "11111111-1111-1111-1111-111111111111"}),
+      (p:Post {id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"})
+CREATE (a)-[:POSTED {created_at: "2024-11-01T00:00:00.000Z"}]->(p);
+
+// Bob → Learning Cypher
+MATCH (b:Profil {id: "22222222-2222-2222-2222-222222222222"}),
+      (p:Post {id: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"})
+CREATE (b)-[:POSTED {created_at: "2024-12-01T00:00:00.000Z"}]->(p);
+
+// Charlie → Enjoying the weather
+MATCH (c:Profil {id: "33333333-3333-3333-3333-333333333333"}),
+      (p:Post {id: "cccccccc-cccc-cccc-cccc-cccccccccccc"})
+CREATE (c)-[:POSTED {created_at: "2024-11-15T00:00:00.000Z"}]->(p);
+
+// Didié → Traveling to Paris
+MATCH (d:Profil {id: "44444444-4444-4444-4444-444444444444"}),
+      (p:Post {id: "dddddddd-dddd-dddd-dddd-dddddddddddd"})
+CREATE (d)-[:POSTED {created_at: "2024-11-20T00:00:00.000Z"}]->(p);
