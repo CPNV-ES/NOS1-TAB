@@ -1,0 +1,31 @@
+### GET posts of a profil
+GET http://127.0.0.1:8000/api/profils/11111111-1111-1111-1111-111111111111/posts
+Accept: application/json
+
+### CREATE post
+POST http://127.0.0.1:8000/api/profils/11111111-1111-1111-1111-111111111111/posts
+Content-Type: application/json
+Accept: application/json
+
+{
+  "description": "Ceci est un create de Alice",
+  "image_id": 987001
+}
+
+### show
+GET http://127.0.0.1:8000/api/profils/11111111-1111-1111-1111-111111111111/posts/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+Accept: application/json
+
+### UPDATE post
+PUT http://127.0.0.1:8000/api/profils/11111111-1111-1111-1111-111111111111/posts/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+Content-Type: application/json
+Accept: application/json
+
+{
+  "description": "Updated description",
+  "image_id": 987999
+}
+
+### DELETE post
+DELETE http://127.0.0.1:8000/api/profils/11111111-1111-1111-1111-111111111111/posts/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+Accept: application/json
