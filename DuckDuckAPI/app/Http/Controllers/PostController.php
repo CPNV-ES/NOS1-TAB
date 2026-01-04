@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Post;
 
-
 class PostController extends Controller
 {
     /**
@@ -15,7 +14,7 @@ class PostController extends Controller
     public function index(string $id)
     {
         $query = '
-            MATCH (p:Profil {id: $id})-[:POSTED]->(post:Post)
+            MATCH (:Profil {id: $id})-[:POSTED]->(post:Post)
             RETURN post
         ';
 
@@ -29,20 +28,27 @@ class PostController extends Controller
     /**
      * POST /api/profils/{id}/posts
      */
-    public function store(Request $request,  string $id)
+    public function store(Request $request, string $id)
     {
         $post_id = Str::uuid()->toString();
         $description = $request->description;
-        $image_id = $request->image_id;
         $created_at = now()->toISOString();
         $updated_at = $created_at;
+
+        $image_url = null;
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('public/posts');
+            $filename = basename($path);
+            $image_url = url("storage/posts/$filename");
+        }
 
         $query = '
             MATCH (p:Profil {id: $id})
             CREATE (post:Post {
                 id: $post_id,
                 description: $description,
-                image_id: $image_id,
+                image_url: $image_url,
                 created_at: $created_at,
                 updated_at: $updated_at
             })
@@ -50,7 +56,7 @@ class PostController extends Controller
             RETURN post
         ';
 
-        $params = compact('id', 'post_id', 'description', 'image_id', 'created_at', 'updated_at');
+        $params = compact('id', 'post_id', 'description', 'image_url', 'created_at', 'updated_at');
 
         $result = app('neo4j')->run($query, $params);
 
@@ -58,7 +64,7 @@ class PostController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * GET /api/profils/{id}/posts/{post_id}
      */
     public function show(string $id, string $post_id)
     {
@@ -78,18 +84,34 @@ class PostController extends Controller
     public function update(Request $request, string $id, string $post_id)
     {
         $description = $request->description;
-        $image_id = $request->image_id;
         $updated_at = now()->toISOString();
 
-        $query = '
-            MATCH (:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id})
-            SET post.description = $description,
-                post.image_id = $image_id,
-                post.updated_at = $updated_at
-            RETURN post
-        ';
+        $image_url = null;
 
-        $params = compact('id', 'post_id', 'description', 'image_id', 'updated_at');
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('public/posts');
+            $filename = basename($path);
+            $image_url = url("storage/posts/$filename");
+        }
+
+        if ($image_url) {
+            $query = '
+                MATCH (:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id})
+                SET post.description = $description,
+                    post.image_url = $image_url,
+                    post.updated_at = $updated_at
+                RETURN post
+            ';
+            $params = compact('id', 'post_id', 'description', 'image_url', 'updated_at');
+        } else {
+            $query = '
+                MATCH (:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id})
+                SET post.description = $description,
+                    post.updated_at = $updated_at
+                RETURN post
+            ';
+            $params = compact('id', 'post_id', 'description', 'updated_at');
+        }
 
         $result = app('neo4j')->run($query, $params);
 
@@ -101,12 +123,30 @@ class PostController extends Controller
      */
     public function destroy(string $id, string $post_id)
     {
-        $query = '
-            MATCH (:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id})
-            DETACH DELETE post
-        ';
+        $result = app('neo4j')->run(
+            'MATCH (:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id}) RETURN post',
+            compact('id', 'post_id')
+        );
 
-        app('neo4j')->run($query, compact('id', 'post_id'));
+        if ($result->isEmpty()) {
+            return response()->json(['error' => 'Post not found'], 404);
+        }
+
+        $post = Post::fromNode($result->first()->get('post'));
+
+        if (!empty($post->image_url)) {
+            $filename = basename($post->image_url);
+            $path = storage_path("app/public/posts/$filename");
+
+            if (file_exists($path)) {
+                unlink($path);
+            }
+        }
+
+        app('neo4j')->run(
+            'MATCH (:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id}) DETACH DELETE post',
+            compact('id', 'post_id')
+        );
 
         return response()->json(['deleted' => true]);
     }

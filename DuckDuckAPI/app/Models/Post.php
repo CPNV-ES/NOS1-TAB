@@ -8,15 +8,15 @@ class Post
 {
     public string $id;
     public string $description;
-    public int $image_id;
+    public string $image_url;
     public string $created_at;
     public string $updated_at;
 
-    public function __construct(string $id, string $description, int $image_id, string $created_at, string $updated_at)
+    public function __construct(string $id, string $description, string $image_url, string $created_at, string $updated_at)
     {
         $this->id = $id;
         $this->description = $description;
-        $this->image_id = $image_id;
+        $this->image_url = $image_url;
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
     }
@@ -28,7 +28,7 @@ class Post
         return new self(
             $props['id'],
             $props['description'],
-            $props['image_id'],
+            $props['image_url'],
             $props['created_at'],
             $props['updated_at'],
         );
@@ -39,7 +39,7 @@ class Post
         return [
             'id' => $this->id,
             'description' => $this->description,
-            'image_id' => $this->image_id,
+            'image_url' => $this->image_url,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
