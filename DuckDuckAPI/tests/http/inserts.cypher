@@ -5,7 +5,7 @@
 CREATE (:Profil {
   id: "11111111-1111-1111-1111-111111111111",
   name: "Alice",
-  image_url: "http://10.0.2.2:8000/storage/profils/alice.jpg",
+  image_url: "http://10.0.2.2:8000/storage/public/profils/alice.jpg",
   hash: "$2y$12$abcdefghijklmnopqrstuv",
   created_at: "2024-10-01T00:00:00.000Z",
   updated_at: "2024-10-01T00:00:00.000Z"
@@ -15,7 +15,7 @@ CREATE (:Profil {
 CREATE (:Profil {
   id: "22222222-2222-2222-2222-222222222222",
   name: "Bob",
-  image_url: "http://10.0.2.2:8000/storage/profils/bob.jpg",
+  image_url: "http://10.0.2.2:8000/storage/public/profils/bob.jpg",
   hash: "$2y$12$abcdefghijklmnopqrstuv",
   created_at: "2024-10-02T00:00:00.000Z",
   updated_at: "2024-10-02T00:00:00.000Z"
@@ -25,7 +25,7 @@ CREATE (:Profil {
 CREATE (:Profil {
   id: "33333333-3333-3333-3333-333333333333",
   name: "Charlie",
-  image_url: "http://10.0.2.2:8000/storage/profils/charlie.jpg",
+  image_url: "http://10.0.2.2:8000/storage/public/profils/charlie.jpg",
   hash: "$2y$12$abcdefghijklmnopqrstuv",
   created_at: "2024-10-03T00:00:00.000Z",
   updated_at: "2024-10-03T00:00:00.000Z"
@@ -35,7 +35,7 @@ CREATE (:Profil {
 CREATE (:Profil {
   id: "44444444-4444-4444-4444-444444444444",
   name: "Didié",
-  image_url: "http://10.0.2.2:8000/storage/profils/didie.jpg",
+  image_url: "http://10.0.2.2:8000/storage/public/profils/didie.jpg",
   hash: "$2y$12$abcdefghijklmnopqrstuv",
   created_at: "2024-10-04T00:00:00.000Z",
   updated_at: "2024-10-04T00:00:00.000Z"
@@ -45,7 +45,7 @@ CREATE (:Profil {
 CREATE (:Profil {
   id: "55555555-5555-5555-5555-555555555555",
   name: "Diana",
-  image_url: "http://10.0.2.2:8000/storage/profils/diana.jpg",
+  image_url: "http://10.0.2.2:8000/storage/public/profils/diana.jpg",
   hash: "$2y$12$abcdefghijklmnopqrstuv",
   created_at: "2024-10-05T00:00:00.000Z",
   updated_at: "2024-10-05T00:00:00.000Z"
@@ -89,7 +89,7 @@ CREATE (c)-[:FRIEND {created_at: "2024-10-15T00:00:00.000Z"}]->(a);
 CREATE (:Post {
   id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
   description: "Hello world!",
-  image_url: "http://10.0.2.2:8000/storage/profils/helloworld.jpg",
+  image_url: "http://10.0.2.2:8000/storage/public/profils/helloworld.jpg",
   created_at: "2024-11-01T00:00:00.000Z",
   updated_at: "2024-11-01T00:00:00.000Z"
 });
@@ -98,7 +98,7 @@ CREATE (:Post {
 CREATE (:Post {
   id: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
   description: "Learning Cypher",
-  image_url: "http://10.0.2.2:8000/storage/posts/cypher.jpg",
+  image_url: "http://10.0.2.2:8000/storage/public/posts/cypher.jpg",
   created_at: "2024-12-01T00:00:00.000Z",
   updated_at: "2024-12-01T00:00:00.000Z"
 });
@@ -107,7 +107,7 @@ CREATE (:Post {
 CREATE (:Post {
   id: "cccccccc-cccc-cccc-cccc-cccccccccccc",
   description: "Enjoying the weather",
-  image_url: "http://10.0.2.2:8000/storage/profils/weather.jpg",
+  image_url: "http://10.0.2.2:8000/storage/public/profils/weather.jpg",
   created_at: "2024-11-15T00:00:00.000Z",
   updated_at: "2024-11-15T00:00:00.000Z"
 });
@@ -116,7 +116,7 @@ CREATE (:Post {
 CREATE (:Post {
   id: "dddddddd-dddd-dddd-dddd-dddddddddddd",
   description: "Traveling to Paris",
-  image_url: "http://10.0.2.2:8000/storage/profils/paris.jpg",
+  image_url: "http://10.0.2.2:8000/storage/public/profils/paris.jpg",
   created_at: "2024-11-20T00:00:00.000Z",
   updated_at: "2024-11-20T00:00:00.000Z"
 });
