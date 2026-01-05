@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Post;
+use App\Models\Profil;
 
 class PostController extends Controller
 {
@@ -14,14 +15,15 @@ class PostController extends Controller
     public function index(string $id)
     {
         $query = '
-            MATCH (:Profil {id: $id})-[:POSTED]->(post:Post)
-            RETURN post
+            MATCH (profil:Profil {id: $id})-[:POSTED]->(post:Post)
+            RETURN post, profil
         ';
 
         $result = app('neo4j')->run($query, ['id' => $id]);
 
         return collect($result->toArray())->map(function ($row) {
-            return Post::fromNode($row['post'])->toArray();
+            $profil = Profil::fromNode($row['profil']);
+            return Post::fromNode($row['post'], $profil)->toArray();
         });
     }
 
