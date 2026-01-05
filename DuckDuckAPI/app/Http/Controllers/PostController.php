@@ -40,9 +40,9 @@ class PostController extends Controller
         $image_url = null;
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('public/posts');
+            $path = $request->file('image')->store('posts/');
             $filename = basename($path);
-            $image_url = url("storage/posts/$filename");
+            $image_url = "http://10.0.2.2:8000/storage/posts/$filename";
         }
 
         $query = '
@@ -55,14 +55,16 @@ class PostController extends Controller
                 updated_at: $updated_at
             })
             CREATE (p)-[:POSTED {created_at: $created_at}]->(post)
-            RETURN post
+            RETURN post, p AS profil
         ';
 
         $params = compact('id', 'post_id', 'description', 'image_url', 'created_at', 'updated_at');
 
         $result = app('neo4j')->run($query, $params);
 
-        return Post::fromNode($result->first()->get('post'))->toArray();
+        $profil = Profil::fromNode($result->first()->get('profil'));
+
+        return Post::fromNode($result->first()->get('post'), $profil)->toArray();
     }
 
     /**
@@ -71,13 +73,15 @@ class PostController extends Controller
     public function show(string $id, string $post_id)
     {
         $query = '
-            MATCH (:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id})
-            RETURN post
+            MATCH (profil:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id})
+            RETURN post, profil
         ';
 
         $result = app('neo4j')->run($query, compact('id', 'post_id'));
 
-        return Post::fromNode($result->first()->get('post'))->toArray();
+        $profil = Profil::fromNode($result->first()->get('profil'));
+
+        return Post::fromNode($result->first()->get('post'), $profil)->toArray();
     }
 
     /**
@@ -93,31 +97,33 @@ class PostController extends Controller
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('public/posts');
             $filename = basename($path);
-            $image_url = url("storage/posts/$filename");
+            $image_url = "http://10.0.2.2:8000/storage/posts/$filename";
         }
 
         if ($image_url) {
             $query = '
-                MATCH (:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id})
+                MATCH (profil:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id})
                 SET post.description = $description,
                     post.image_url = $image_url,
                     post.updated_at = $updated_at
-                RETURN post
+                RETURN post, profil
             ';
             $params = compact('id', 'post_id', 'description', 'image_url', 'updated_at');
         } else {
             $query = '
-                MATCH (:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id})
+                MATCH (profil:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id})
                 SET post.description = $description,
                     post.updated_at = $updated_at
-                RETURN post
+                RETURN post, profil
             ';
             $params = compact('id', 'post_id', 'description', 'updated_at');
         }
 
         $result = app('neo4j')->run($query, $params);
 
-        return Post::fromNode($result->first()->get('post'))->toArray();
+        $profil = Profil::fromNode($result->first()->get('profil'));
+
+        return Post::fromNode($result->first()->get('post'), $profil)->toArray();
     }
 
     /**
@@ -126,7 +132,8 @@ class PostController extends Controller
     public function destroy(string $id, string $post_id)
     {
         $result = app('neo4j')->run(
-            'MATCH (:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id}) RETURN post',
+            'MATCH (profil:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id})
+             RETURN post, profil',
             compact('id', 'post_id')
         );
 
@@ -134,7 +141,8 @@ class PostController extends Controller
             return response()->json(['error' => 'Post not found'], 404);
         }
 
-        $post = Post::fromNode($result->first()->get('post'));
+        $profil = Profil::fromNode($result->first()->get('profil'));
+        $post = Post::fromNode($result->first()->get('post'), $profil);
 
         if (!empty($post->image_url)) {
             $filename = basename($post->image_url);
@@ -146,7 +154,8 @@ class PostController extends Controller
         }
 
         app('neo4j')->run(
-            'MATCH (:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id}) DETACH DELETE post',
+            'MATCH (:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id})
+             DETACH DELETE post',
             compact('id', 'post_id')
         );
 
