@@ -31,7 +31,7 @@ class ProfilController extends Controller
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('public/profils');
             $filename = basename($path);
-            $image_url = url("storage/profils/$filename");
+            $image_url = "http://10.0.2.2:8000/storage/profils/$filename";
         }
 
         $query = '
@@ -74,8 +74,7 @@ class ProfilController extends Controller
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('public/profils');
             $filename = basename($path);
-            $image_url = url("storage/profils/$filename");
-        }
+            $image_url = "http://10.0.2.2:8000/storage/profils/$filename";        }
 
         if ($image_url) {
             $query = '
