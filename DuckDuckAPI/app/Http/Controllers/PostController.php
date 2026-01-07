@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Post;
 use App\Models\Profil;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -40,9 +41,16 @@ class PostController extends Controller
         $image_url = null;
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('posts/');
-            $filename = basename($path);
-            $image_url = "http://10.0.2.2:8000/storage/posts/$filename";
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $filename = Str::uuid() . '.' . $extension;
+
+            Storage::disk('public')->putFileAs('posts', $request->file('image'), $filename);
+
+            $baseUrl = $request->getScheme() . '://' . $request->getHost();
+            if ($request->getPort() && !in_array($request->getPort(), [80, 443])) {
+                $baseUrl .= ':' . $request->getPort();
+            }
+            $image_url = $baseUrl . '/storage/posts/' . $filename;
         }
 
         $query = '
@@ -95,9 +103,16 @@ class PostController extends Controller
         $image_url = null;
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('public/posts');
-            $filename = basename($path);
-            $image_url = "http://10.0.2.2:8000/storage/posts/$filename";
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $filename = Str::uuid() . '.' . $extension;
+
+            Storage::disk('public')->putFileAs('posts', $request->file('image'), $filename);
+
+            $baseUrl = $request->getScheme() . '://' . $request->getHost();
+            if ($request->getPort() && !in_array($request->getPort(), [80, 443])) {
+                $baseUrl .= ':' . $request->getPort();
+            }
+            $image_url = $baseUrl . '/storage/posts/' . $filename;
         }
 
         if ($image_url) {
@@ -146,11 +161,8 @@ class PostController extends Controller
 
         if (!empty($post->image_url)) {
             $filename = basename($post->image_url);
-            $path = storage_path("app/public/posts/$filename");
 
-            if (file_exists($path)) {
-                unlink($path);
-            }
+            Storage::disk('public')->delete('posts/' . $filename);
         }
 
         app('neo4j')->run(
