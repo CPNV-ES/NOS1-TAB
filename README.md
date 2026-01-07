@@ -31,6 +31,10 @@ composer require laudis/neo4j-php-client
 ```
 ### .env
 ```
+cp .env.example .env
+```
+modifié:
+```
 DB_CONNECTION=none
 
 NEO4J_SCHEME=bolt
