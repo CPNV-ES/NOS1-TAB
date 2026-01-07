@@ -46,6 +46,10 @@ NEO4J_PASSWORD= #[your password]
 ```
 
 ```
+php artisan key:generate
+```
+
+```
 php artisan migrate
 ```
 ### Recharge la config
