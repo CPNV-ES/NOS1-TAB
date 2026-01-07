@@ -89,7 +89,7 @@ CREATE (c)-[:FRIEND {created_at: "2024-10-15T00:00:00.000Z"}]->(a);
 CREATE (:Post {
   id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
   description: "Hello world!",
-  image_url: "http://10.0.2.2:8000/storage/profils/helloworld.jpg",
+  image_url: "http://10.0.2.2:8000/storage/posts/helloworld.jpg",
   created_at: "2024-11-01T00:00:00.000Z",
   updated_at: "2024-11-01T00:00:00.000Z"
 });
@@ -107,7 +107,7 @@ CREATE (:Post {
 CREATE (:Post {
   id: "cccccccc-cccc-cccc-cccc-cccccccccccc",
   description: "Enjoying the weather",
-  image_url: "http://10.0.2.2:8000/storage/profils/weather.jpg",
+  image_url: "http://10.0.2.2:8000/storage/posts/weather.jpg",
   created_at: "2024-11-15T00:00:00.000Z",
   updated_at: "2024-11-15T00:00:00.000Z"
 });
@@ -116,7 +116,7 @@ CREATE (:Post {
 CREATE (:Post {
   id: "dddddddd-dddd-dddd-dddd-dddddddddddd",
   description: "Traveling to Paris",
-  image_url: "http://10.0.2.2:8000/storage/profils/paris.jpg",
+  image_url: "http://10.0.2.2:8000/storage/posts/paris.jpg",
   created_at: "2024-11-20T00:00:00.000Z",
   updated_at: "2024-11-20T00:00:00.000Z"
 });
