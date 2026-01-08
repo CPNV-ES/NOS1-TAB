@@ -42,10 +42,11 @@ Create the storage directory:
 ```bash
 mkdir storage/app/public/
 ```
-> **ℹ️ Important**
-> 
->Copy the profil and post image folders from tests/http/image into:
-storage/app/public/
+
+Copy profil and post images into storage/app/public/
+```bash
+cp -r tests/http/images/profils tests/http/images/posts storage/app/public/
+```
 
 Create the symbolic link to public/storage:
 ```bash
