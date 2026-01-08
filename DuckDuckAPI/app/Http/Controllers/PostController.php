@@ -34,7 +34,7 @@ class PostController extends Controller
     public function store(Request $request, string $id)
     {
         $post_id = Str::uuid()->toString();
-        $description = $request->description;
+        $description = $request->input('description');
         $created_at = now()->toISOString();
         $updated_at = $created_at;
 
@@ -87,6 +87,10 @@ class PostController extends Controller
 
         $result = app('neo4j')->run($query, compact('id', 'post_id'));
 
+        if ($result->isEmpty()) {
+            return response()->json(['error' => 'Post not found'], 404);
+        }
+
         $profil = Profil::fromNode($result->first()->get('profil'));
 
         return Post::fromNode($result->first()->get('post'), $profil)->toArray();
@@ -97,10 +101,13 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id, string $post_id)
     {
-        $description = $request->description;
-        $updated_at = now()->toISOString();
+        $description = $request->input('description');
 
-        $image_url = null;
+        if (empty($description)) {
+            return response()->json(['error' => 'Description is required'], 400);
+        }
+
+        $updated_at = now()->toISOString();
 
         if ($request->hasFile('image')) {
             $extension = $request->file('image')->getClientOriginalExtension();
@@ -113,15 +120,20 @@ class PostController extends Controller
                 $baseUrl .= ':' . $request->getPort();
             }
             $image_url = $baseUrl . '/storage/posts/' . $filename;
-        }
 
-        if ($image_url) {
             $query = '
                 MATCH (profil:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id})
                 SET post.description = $description,
                     post.image_url = $image_url,
                     post.updated_at = $updated_at
-                RETURN post, profil
+                WITH post, profil
+                RETURN post {
+                    .id,
+                    .description,
+                    .image_url,
+                    .created_at,
+                    .updated_at
+                } AS post, profil
             ';
             $params = compact('id', 'post_id', 'description', 'image_url', 'updated_at');
         } else {
@@ -129,16 +141,39 @@ class PostController extends Controller
                 MATCH (profil:Profil {id: $id})-[:POSTED]->(post:Post {id: $post_id})
                 SET post.description = $description,
                     post.updated_at = $updated_at
-                RETURN post, profil
+                WITH post, profil
+                RETURN post {
+                    .id,
+                    .description,
+                    .image_url,
+                    .created_at,
+                    .updated_at
+                } AS post, profil
             ';
             $params = compact('id', 'post_id', 'description', 'updated_at');
         }
 
         $result = app('neo4j')->run($query, $params);
 
-        $profil = Profil::fromNode($result->first()->get('profil'));
+        if ($result->isEmpty()) {
+            return response()->json(['error' => 'Post not found'], 404);
+        }
 
-        return Post::fromNode($result->first()->get('post'), $profil)->toArray();
+        $postData = $result->first()->get('post');
+        $profilNode = $result->first()->get('profil');
+
+        $profil = Profil::fromNode($profilNode);
+
+        $post = new Post(
+            $postData['id'],
+            $postData['description'],
+            $postData['image_url'],
+            $profil,
+            $postData['created_at'],
+            $postData['updated_at']
+        );
+
+        return $post->toArray();
     }
 
     /**
@@ -161,7 +196,6 @@ class PostController extends Controller
 
         if (!empty($post->image_url)) {
             $filename = basename($post->image_url);
-
             Storage::disk('public')->delete('posts/' . $filename);
         }
 
